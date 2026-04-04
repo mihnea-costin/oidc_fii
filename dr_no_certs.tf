@@ -4,6 +4,12 @@
 
 data "aws_region" "nc_dr_primary" {}
 
+output "account_id" {
+  value = data.aws_caller_identity.current.account_id
+}
+
+data "aws_caller_identity" "current" {}
+
 data "aws_region" "nc_dr_secondary_region" {
   provider = aws.secondary
 }
@@ -1470,8 +1476,3 @@ output "nc_dr_automatic_failover_note" {
   value       = "Primary ASG AWS/AutoScaling GroupInServiceInstances alarm in ${data.aws_region.nc_dr_primary.name} (ALARM when 0 InService) → SNS (same region) → Lambda in ${data.aws_region.nc_dr_primary.name} calls Auto Scaling in ${data.aws_region.nc_dr_secondary_region.name} to scale DR ASG. CloudFront uses HA-style VPC origins + origin header, and origin group fails over on configured HTTP errors when DR has healthy targets. Toggle subscription with var.dr_route53_automatic_failover."
 }
 
-output "account_id" {
-  value = data.aws_caller_identity.current.account_id
-}
-
-data "aws_caller_identity" "current" {}
